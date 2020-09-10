@@ -28,7 +28,7 @@ import (
 
 		encode := b64.StdEncoding.EncodeToString(payload)
 		hexencode := hex.EncodeToString([]byte(encode))
-		ciphertext := useful.Encrypt([]byte(hexencode), "D00mfist")
+		ciphertext := useful.Encrypt([]byte(hexencode), "Lunar")
 		hexcipher := hex.EncodeToString(ciphertext)
 
 		f, err := os.Create("shelly.go")
